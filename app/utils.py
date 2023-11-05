@@ -23,8 +23,8 @@ def verify_attrb(obj, attrb: str):
 def build_reponse(data:dict | list | None, message:str, status=200):
     return make_response(
         jsonify(
-            message,
-            data
+            message=message,
+            data=data
         ),
         status
     )
