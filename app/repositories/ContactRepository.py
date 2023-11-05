@@ -2,39 +2,25 @@ from app import db
 from app.models.Contacts import Contacts
 
 class ContactRepository:
-    def add(self, contact):
+    def all(self):
         try:
-            new_contact = Contacts(
-                name=contact['name'],
-                email=contact['email'],
-                phone=contact['phone'],
-                category_id=contact['category_id']
-            )
+            contacts_list = []
+            contacts = Contacts.query.all()
 
-            db.session.add(new_contact)
-            db.session.commit()
+            for contact in contacts:
+                contacts_list.append({
+                    'id': contact.id,
+                    'name': contact.name,
+                    'email': contact.email,
+                    'phone': contact.phone,
+                    'category_id': contact.category_id
+                })
 
-            return new_contact.id
+            return contacts_list
+        except Exception as e:
+            raise e
 
-        except:
-            return None
-
-    def get_all(self):
-        contacts_list = []
-        contacts = Contacts.query.all()
-
-        for contact in contacts:
-            contacts_list.append({
-                'id': contact.id,
-                'name': contact.name,
-                'email': contact.email,
-                'phone': contact.phone,
-                'category_id': contact.category_id
-            })
-
-        return contacts_list
-
-    def get_by_id(self, contact_id):
+    def one_by_id(self, contact_id):
         try:
             contact = Contacts.query.filter_by(id=contact_id).first()
 
@@ -52,22 +38,24 @@ class ContactRepository:
         except:
             return None
 
-    def delete_by_id(self, contact_id):
+    def create(self, contact):
         try:
-            contact = Contacts.query.filter_by(id=contact_id).first()
+            new_contact = Contacts(
+                name=contact['name'],
+                email=contact['email'],
+                phone=contact['phone'],
+                category_id=contact['category_id']
+            )
 
-            if contact is None:
-                return "Contact not found"
-
-            db.session.delete(contact)
+            db.session.add(new_contact)
             db.session.commit()
 
-            return contact_id
+            return new_contact.id
 
-        except:
-            return None
+        except Exception as e:
+            raise e
 
-    def update_by_id(self, contact_id, contact_data):
+    def update(self, contact_id, contact_data):
         try:
             contact = Contacts.query.filter_by(id=contact_id).first()
 
@@ -89,5 +77,20 @@ class ContactRepository:
 
             return contact_id
 
-        except:
-            return None
+        except Exception as e:
+            raise e
+
+    def delete(self, contact_id):
+        try:
+            contact = Contacts.query.filter_by(id=contact_id).first()
+
+            if contact is None:
+                return "Contact not found"
+
+            db.session.delete(contact)
+            db.session.commit()
+
+            return contact_id
+
+        except Exception as e:
+            raise e
