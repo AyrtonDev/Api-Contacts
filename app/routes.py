@@ -11,7 +11,11 @@ def contacts_handler():
     if request.method == 'GET':
         return contact_controller.get_contacts()
 
-@app.route('/contacts/<contact_id>')
-def contact_get(contact_id):
-    print(contact_id)
-    return contact_controller.get_contact(contact_id)
+@app.route('/contacts/<contact_id>', methods=['PUT', 'GET', 'DELETE'])
+def contact_handler(contact_id):
+    if request.method == 'GET':
+        return contact_controller.get_contact(contact_id)
+    if request.method == 'PUT':
+        return contact_controller.update_contact(contact_id)
+    if request.method == 'DELETE':
+        return contact_controller.delete_contact(contact_id)
